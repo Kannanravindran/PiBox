@@ -1,0 +1,40 @@
+<html>
+<head>
+	<title>Camera</title>
+	
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../template/mustache.js"></script>
+	<script type="text/javascript" src="./js/rest-client-delete.js"></script>
+	<link rel="stylesheet" type="text/css" href="../template/main.css">
+</head>
+
+<body>
+	<form id="deleteForm">
+		<p>Are you sure you'd like to delete the following camera?</p>
+		
+		<div id="tableDiv">
+			<script id="mustacheTemplate">
+			<table>
+				<tr>
+					<td>Id</td>
+					<td>Type</td>
+					<td>Model</td>
+					<td>MinimumShutterSpeed</td>
+					<td>Battery</td>
+				</tr>
+				<tr>
+					<td><input value="{{id}}"	id="id" name="id" readonly/></td>
+					<td><input value="{{type}}"	id="type" readonly/></td>
+					<td><input value="{{model}}"id="model" readonly/></td>
+					<td>1/<input value="{{minShutterSpeedInv}}" id="minShutterSpeedInv" readonly/></td>
+					<td><input value="{{battery}}" id="battery" readonly/></td>
+				</tr>
+			</table>
+			</script>
+		</div>
+		
+		<br><input type="submit" value="delete"/>
+	</form>
+	<br><a href="./getCamera.html">Back to cameras</a>
+</body>
+</html> 

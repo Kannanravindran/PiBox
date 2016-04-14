@@ -1,0 +1,58 @@
+<html>
+
+<head>
+	<title>Camera</title>
+	
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type="text/javascript" src="/PiBox/js/mustache.js"></script>
+</head>
+
+<body>
+	<div id="tableDiv"></div>
+	<script id="mustacheTemplate" type="x-tmpl-mustache">
+	<table cellspacing="0" cellpadding="5">
+	<tbody>
+		<tr>
+			<td>ID</td>
+			<td>Type</td>
+			<td>Username</td>
+			<td>Email</td>
+			<td>First Name</td>
+			<td>Last Name</td>
+			<td>Edit</td>
+			<td>Delete</td>
+		</tr>
+		{{#.}}
+		<tr>
+			<td>{{id}}</td>
+			<td>{{type}}</td> 
+			<td>{{email}}</td> 
+			<td>{{username}}</td>
+			<td>{{firstName}}</td>
+			<td>{{lastName}}</td>
+			<td><a href="./updateUsers.html?id={{id}}">edit</a></td>
+			<td><a href="./deleteusers.html?id={{id}}">delete</a></td>
+		</tr>
+		{{/.}}
+	</tbody>
+	</table>
+	</script>
+	<br>
+	<br>
+	<a href="./addUsers.html">Add User</a><br>
+	<a href="../../index.html">Back to admin page</a>
+</body> 
+
+<script>
+$(document).ready(function(){
+	$.ajax({
+		url: "/PiBox/api/rest/users",
+		dataType:"json"
+	}).then(function(data) {
+		var template = $('#mustacheTemplate').html();
+		var out = Mustache.render(template, data);
+		$('#tableDiv').html(out);
+	});
+});
+</script>
+</html>

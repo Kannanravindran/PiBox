@@ -1,0 +1,44 @@
+<html>
+<head>
+	<title>User</title>
+	
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type="text/javascript" src="/PiBox/js/mustache.js"></script>
+	<script type="text/javascript" src="./js/rest-client-update.js"></script>
+	
+</head>
+
+<body>
+	<form id="editForm">
+	<div id="tableDiv">
+	 	<script id="mustacheTemplate">
+		<table>
+		<tbody>
+			<tr>
+				<td>ID</td>
+				<td>Type</td>
+				<td>Username</td>
+				<td>Email</td>
+				<td>First Name</td>
+				<td>Last Name</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td><input type="text" id="id" 			name="id" value="{{id}}" readonly/></td>
+				<td><input type="text" id="type" 		name="type" value="{{type}}"/></td>
+				<td><input type="text" id="username" 	name="username"value="{{username}}"/></td>
+				<td><input type="text" id="email" 		name="email"value="{{email}}"/></td>
+				<td><input type="text" id="firstName" 	name="firstname"value="{{firstname}}"/></td>
+				<td><input type="text" id="lastName" 	name="lastname"value="{{lastname}}"/></td>
+				
+				<td><input type="submit"/></td>
+			</tr>
+		</tbody>
+		</table>
+		</script>
+	</div>
+	</form>
+	<br>
+	<a href="/PiBox/admin/utilities/users/getUsers.html">Back to users</a>
+</body>
+</html> 

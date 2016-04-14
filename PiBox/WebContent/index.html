@@ -1,0 +1,26 @@
+<html>
+
+<head>
+	<title>PiBox Application</title>
+	
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type="text/javascript" src="./pages/js/mustache.js"></script>
+</head>
+
+<body>
+	<p>Welcome to PiBox</p>
+</body> 
+
+<script>
+$(document).ready(function(){
+	$.ajax({
+		url: "/PiBox/api/rest/users",
+		dataType:"json"
+	}).then(function(data) {
+		var template = $('#mustacheTemplate').html();
+		var out = Mustache.render(template, data);
+		$('#tableDiv').html(out);
+	});
+});
+</script>
+</html>
