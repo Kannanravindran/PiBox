@@ -25,12 +25,17 @@
 		
 		<div id="waiting">Waiting for host to start...</div>
 		<div id="live">Get ready! The session is starting</div>
+		<div id="tooLate">The session has already started or end!</div>
+		<div id="finish">The session has ended!</div>
 	</div>
 	
 </html>
 
 <script>
 var SessionInfo;
+var boolSessionStarted;
+var sessionId = getUrlParameter('sessionId');
+var userId = <%= session.getAttribute("userId") %>;
 
 //Function used to get parameters from URL
 function getUrlParameter(sParam)
@@ -47,8 +52,6 @@ function getUrlParameter(sParam)
 
 // First time entering the session... register & get session information
 function registerForSession() {
-	var sessionId = getUrlParameter('sessionId');
-	var userId = <%= session.getAttribute("userId") %>;
 	$.ajax({
 		url: "/PiBox/api/rest/sessions/"+sessionId+"/"+userId,
 		type:"POST"
@@ -58,6 +61,7 @@ function registerForSession() {
 	});
 }
 
+//Update gaming session
 function pollSession() {
 	var sessionId = getUrlParameter('sessionId');
 	$.ajax({
@@ -69,11 +73,34 @@ function pollSession() {
 	}).then(function(data) {
 		console.log(data);
 		if(data.status == "Wait") {
+			console.log('on wait');
+			boolSessionStarted = true;
 			$("#waiting").show();
 			$("#live").hide();
-		} else {
-			$("#waiting").hide();
-			$("#live").show();
+		} else if(data.status == "Stop") {
+			if(boolSessionStarted == false) {
+				console.log('on stop - inactive');
+				$("#waiting").hide();
+				$("#live").hide();
+				$("#tooLate").show();
+			} else {
+				console.log('on stop');
+				$("#live").hide();
+				$("#finish").show();
+			}
+		} else if(data.status == "InProgress") {
+			
+			if(boolSessionStarted == false) {
+				console.log('in progress - no participation');
+				$("#waiting").hide();
+				$("#live").hide();
+				$("#tooLate").show();
+			} else {
+				console.log('in progress - active participation');
+				$("#waiting").hide();
+				$("#live").show();
+			}
+			
 		}
 	});
 }
@@ -83,6 +110,7 @@ $(document).ready(function(){
 	var sessionId = getUrlParameter('sessionId');
 	var userId = <%= session.getAttribute("userId") %>;
 	var restUrl = ("/PiBox/api/rest/sessions/"+sessionId+"/"+userId);
+	boolSessionStarted = false;
 	
 	$.ajax({
 		url: restUrl,

@@ -38,14 +38,22 @@
 </html>
 
 <script>
-$(document).ready(function(){
+
+function pollSessions() {
 	$.ajax({
 		url: "/PiBox/api/rest/sessions",
-		dataType:"json"
+		dataType:"json",
+		complete: function() {
+			setTimeout(pollSessions, 4000);
+		}
 	}).then(function(data) {
 		var template = $('#mustacheTemplate').html();
 		var out = Mustache.render(template, data);
 		$('#tableDiv').html(out);
 	});
+}
+
+$(document).ready(function(){
+	pollSessions();
 });
 </script>

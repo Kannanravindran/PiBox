@@ -25,14 +25,15 @@
 		
 		<div id="waiting">Waiting for host to start...</div>
 		<div id="live">Get ready! The session is starting</div>
+		<div id="tooLate">The session has already started!</div>
+		<div id="finish">The session has ended!</div>
 	</div>
 	
 </html>
 
 <script>
 var SessionInfo;
-
-
+var boolSessionStarted;
 
 // First time entering the session... register & get session information
 function registerForSession() {
@@ -51,19 +52,34 @@ function registerForSession() {
 function pollSession() {
 	var sessionId = getUrlParameter('sessionId');
 	$.ajax({
-		url: "/PiBox/api/rest/sessions/"+sessionId,
+		url: "/PiBox/api/rest/sessions/"+sessionId+"/"+userId,
 		dataType:"json",
 		complete: function() {
 			setTimeout(pollSession, 2000);
 		}
 	}).then(function(data) {
-		console.log(data);
+		//console.log(data);
 		if(data.status == "Wait") {
+			console.log('on wait');
+			boolSessionStarted = true;
 			$("#waiting").show();
 			$("#live").hide();
-		} else {
+		} else if(data.status == "Stop") {
+			console.log('on stop');
+			$("#live").hide();
+			$("#finish").show();
+		} else if(data.status == "InProgress") {
+			console.log('in progress - active participation');
+			if(boolSessionStarted == false) {
+				console.log('in progress - no participation');
+				$("#waiting").hide();
+				$("#live").hide();
+				$("#tooLate").show();
+			}
 			$("#waiting").hide();
 			$("#live").show();
+			
+			boolSessionStarted
 		}
 	});
 }
@@ -75,13 +91,13 @@ $(document).ready(function(){
 	var sessionId = getUrlParameter('sessionId');
 	var userId = <%= session.getAttribute("userId") %>;
 	var restUrl = ("/PiBox/api/rest/sessions/"+sessionId+"/"+userId);
+	boolSessionStarted = false;
 	
 	$.ajax({
 		url: restUrl,
 		dataType:"json",
 		statusCode: {
 			404:function() {
-				alert("Entering for the first time eh?");
 				registerForSession();
 			}
 		}
@@ -89,8 +105,6 @@ $(document).ready(function(){
 		console.log(data);
 		pollSession();
 	});
-	
-	
 });
 
 
