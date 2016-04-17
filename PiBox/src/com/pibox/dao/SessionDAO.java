@@ -327,4 +327,28 @@ public class SessionDAO {
 		}
 		return userSessionToReturn;
 	}
+	
+	public void deleteUserSession(UserActivitySession sessionToDelete) throws SQLException {
+		Connection dbConnection = null;
+		PreparedStatement pStatement;
+		String selectUserSessionSqlQuery = "DELETE FROM sessionuserassoc "
+											+ "WHERE sessionId=? "
+												+ "AND userId=?";
+		try {
+			dbConnection = getConnection();
+			pStatement = (PreparedStatement) dbConnection.prepareStatement(selectUserSessionSqlQuery);		
+			pStatement.setInt(1, sessionToDelete.getUserScore());
+			pStatement.setInt(2, sessionToDelete.getSessionId());
+			
+			pStatement.executeUpdate();
+			
+			if(pStatement != null) {
+				pStatement.close();
+			}
+		} finally {
+			if(dbConnection != null) {
+				dbConnection.close();
+			}
+		}
+	}
 }
