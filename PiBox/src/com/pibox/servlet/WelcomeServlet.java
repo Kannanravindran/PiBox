@@ -38,7 +38,7 @@ public class WelcomeServlet extends HttpServlet {
 	protected void doPost( HttpServletRequest request,
 			   HttpServletResponse response) throws IOException, ServletException {
 		String username = request.getParameter("username");
-		String password = request.getParameter("password");
+		//String password = request.getParameter("password");
 		
 		UserDAO userDao = new UserDAO();
 		UserBean user = null;

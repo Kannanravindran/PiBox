@@ -1,0 +1,67 @@
+<html>
+<head>
+	<title>User</title>
+	
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type="text/javascript" src="/PiBox/js/mustache.js"></script>
+	<script type="text/javascript" src="./js/rest-client-update.js"></script>
+	
+</head>
+
+<body>
+	<form id="editSessionForm">
+	<div id="tableSessionDiv">
+	 	<script id="mustacheSessionTemplate">
+		<table>
+		<tbody>
+			<tr>
+				<td>ID</td>
+				<td>Name</td>
+				<td>Activity</td>
+				<td>Status</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>{{id}}</td>
+				<td>{{name}}</td> 
+				<td>{{activity}}</td> 
+				<td>{{status}}</td>
+				<td><a href="../sessions/updateSession.html?id={{id}}">edit session</a></td>
+			</tr>
+		</tbody>
+		</table>
+		</script>
+	</div>
+	</form>
+	
+	<br/>
+	<br/>
+	
+	<form id="editUserSessionForm">
+	<div id="tableUserSessionDiv">
+	 	<script id="mustacheUserSessionTemplate">
+		<table>
+		<tbody>
+			<tr>
+				<td>ID</td>
+				<td>Username</td>
+				<td>UserScore</td>
+				<td></td>
+			</tr>
+			{{#userSessions}}
+			<tr>
+				<td>{{userId}}</td>
+				<td>{{userName}}</td> 
+				<td>{{userScore}}</td> 
+				<td><a href="../sessions/updateSession.html?id={{id}}">Remove from session</a></td>
+			</tr>
+			{{/userSessions}}
+		</tbody>
+		</table>
+		</script>
+	</div>
+	</form>
+	<br>
+	<a href="/PiBox/admin/utilities/rooms/getRooms.html">Back to rooms</a>
+</body>
+</html> 

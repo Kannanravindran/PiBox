@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.pibox.bean.SessionBean;
+import com.pibox.bean.UserActivitySession;
 import com.pibox.bean.UserBean;
 import com.pibox.dao.SessionDAO;
 import com.pibox.dao.UserDAO;
@@ -129,4 +130,41 @@ public class SessionRest {
 		}
 		return response;
 	}
+	
+	
+	/*NON-CRUD OPERATIONS*/
+	@GET
+	@Path("{sessionId}/{userId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getSessionForUser( @PathParam("sessionId") int sessionId,
+										@PathParam("userId") int userId) {
+		Response response = null;
+		SessionDAO sessionDao = new SessionDAO();
+		try {
+			UserActivitySession userSession = sessionDao.getUserSessionForSessionId(userId, sessionId);
+			response = Response.ok(userSession).build();
+		} catch (SQLException e) {
+			response = Response.status(500).build();
+			e.printStackTrace();
+		}
+		return response;
+	}
+	
+	@POST
+	@Path("{sessionId}/{userId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addSessionForUser( @PathParam("sessionId") int sessionId,
+										@PathParam("userId") int userIdToAdd) {
+		Response response = null;
+		SessionDAO sessionDao = new SessionDAO();
+		try {
+			SessionBean currentSessionStatus = sessionDao.addUserToSession(userIdToAdd, sessionId);
+			response = Response.ok(currentSessionStatus).build();
+		} catch (SQLException e) {
+			response = Response.status(500).build();
+			e.printStackTrace();
+		}
+		return response;
+	}
+	
 }

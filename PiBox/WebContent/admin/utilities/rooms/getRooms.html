@@ -17,8 +17,6 @@
 			<td>Name</td>
 			<td>Activity</td>
 			<td>Status</td>
-			<td>Edit</td>
-			<td>Delete</td>
 		</tr>
 		{{#.}}
 		<tr>
@@ -26,8 +24,7 @@
 			<td>{{name}}</td> 
 			<td>{{activity}}</td> 
 			<td>{{status}}</td>
-			<td><a href="./updateSession.html?id={{id}}">edit</a></td>
-			<td><a href="./deleteSession.html?id={{id}}">delete</a></td>
+			<td><a href="./updateRoom.html?id={{id}}">See Statistics</a></td>
 		</tr>
 		{{/.}}
 	</tbody>
@@ -35,7 +32,6 @@
 	</script>
 	<br>
 	<br>
-	<a href="./addSession.html">Add Session</a><br>
 	<a href="../../index.html">Back to admin page</a>
 </body> 
 

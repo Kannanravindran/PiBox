@@ -70,6 +70,13 @@ public class SessionDAO {
 				newId = (int) generatedKeys.getLong(1);
 			}
 			sessionToCreate.setId(newId);
+			
+			if(pStatement != null) {
+				pStatement.close();
+			}
+			if(generatedKeys != null) {
+				generatedKeys.close();
+			}
 		} finally {
 			if(dbConnection != null) {
 				dbConnection.close();
@@ -77,7 +84,7 @@ public class SessionDAO {
 		}
 		return sessionToCreate;
 	}
-	
+
 	public SessionBean readSession(int sessionIdToRead) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement pStatement;
@@ -95,6 +102,13 @@ public class SessionDAO {
 						rs.getString(2),	// activity
 						rs.getString(3)		//status
 						);
+				sessionToReturn.setUserSessions(this.getUserSessionsForSessionId(sessionIdToRead));
+			}
+			if(pStatement != null) {
+				pStatement.close();
+			}
+			if(rs != null) {
+				rs.close();
 			}
 		} finally {
 			if(dbConnection != null) {
@@ -123,6 +137,13 @@ public class SessionDAO {
 						);
 				sessionsToReturn.add(sessionToAdd);
 			}
+			
+			if(pStatement != null) {
+				pStatement.close();
+			}
+			if(rs != null) {
+				rs.close();
+			}
 		} finally {
 			if(dbConnection != null) {
 				dbConnection.close();
@@ -145,6 +166,9 @@ public class SessionDAO {
 			pStatement.setString(3, sessionToUpdate.getStatus());
 			pStatement.setInt(4, sessionToUpdate.getId());
 			pStatement.executeUpdate();
+			if(pStatement != null) {
+				pStatement.close();
+			}
 		} finally {
 			if(dbConnection != null) {
 				dbConnection.close();
@@ -162,6 +186,9 @@ public class SessionDAO {
 			pStatement = (PreparedStatement) dbConnection.prepareStatement(deleteSessionSqlQuery);
 			pStatement.setInt(1, sessionIdToDelete);
 			pStatement.executeUpdate();
+			if(pStatement != null) {
+				pStatement.close();
+			}
 		} finally {
 			if(dbConnection != null) {
 				dbConnection.close();
@@ -171,19 +198,20 @@ public class SessionDAO {
 	
 	
 	/* OTHER NON-CRUD OPERATIONS */
-	public List<UserActivitySession> getUsersForSession(int id) throws SQLException {
+	public List<UserActivitySession> getUserSessionsForSessionId(int id) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement pStatement;
-		String selectUserSessionSqlQuery = "SELECT s.id, s.name, u.id, u.username, j.score"
-											+ "FROM sessions s, users u, sessionUserAssoc j"
-											+ "WHERE j.userId = u.id AND"
-												+ "j.sessionId = s.id AND"
+		String selectUserSessionSqlQuery = "SELECT s.id, s.name, u.id, u.username, j.userScore "
+											+ "FROM sessions s, users u, sessionUserAssoc j "
+											+ "WHERE j.userId = u.id AND "
+												+ "j.sessionId = s.id AND "
 												+ "s.id = ?";
 		UserActivitySession userSessionToAdd = null;
 		List<UserActivitySession> userSessionsToReturn = new ArrayList<UserActivitySession>();
 		try {
 			dbConnection = getConnection();
-			pStatement = (PreparedStatement) dbConnection.prepareStatement(selectUserSessionSqlQuery);			
+			pStatement = (PreparedStatement) dbConnection.prepareStatement(selectUserSessionSqlQuery);
+			pStatement.setInt(1, id);
 			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()) {
 				userSessionToAdd = new UserActivitySession(
@@ -195,6 +223,12 @@ public class SessionDAO {
 						);
 				userSessionsToReturn.add(userSessionToAdd);
 			}
+			if(pStatement != null) {
+				pStatement.close();
+			}
+			if(rs != null) {
+				rs.close();
+			}
 		} finally {
 			if(dbConnection != null) {
 				dbConnection.close();
@@ -202,4 +236,68 @@ public class SessionDAO {
 		}
 		return userSessionsToReturn;
 	}
+	
+	
+	public SessionBean addUserToSession(int userIdToAddToSession, int sessionId) throws SQLException {
+		Connection dbConnection = null;
+		PreparedStatement pStatement;
+		String insertUserSessionSqlQuery = "INSERT INTO sessionuserassoc (sessionId, userId, userScore)"
+															+ " VALUES (?, ?, 0);"; // start user off with a score of 0
+		SessionBean sessionBeanToReturn = this.readSession(sessionId);
+		try {
+			dbConnection = getConnection();
+			pStatement = (PreparedStatement) dbConnection.prepareStatement(insertUserSessionSqlQuery);	
+			pStatement.setInt(1, sessionId);
+			pStatement.setInt(2, userIdToAddToSession);
+			pStatement.executeUpdate();
+			sessionBeanToReturn = this.readSession(sessionId);
+		} finally {
+			if(dbConnection != null) {
+				dbConnection.close();
+			}
+		}
+		return sessionBeanToReturn;
+	}
+	
+	public UserActivitySession getUserSessionForSessionId(int userId, int sessionId) throws SQLException {
+		Connection dbConnection = null;
+		PreparedStatement pStatement;
+		String selectUserSessionSqlQuery = "SELECT s.id, s.name, u.id, u.username, j.userScore "
+											+ "FROM sessions s, users u, sessionUserAssoc j "
+											+ "WHERE j.userId = u.id AND "
+												+ "j.sessionId = s.id AND "
+												+ "s.id = ? AND "
+												+ "u.id = ?";
+		UserActivitySession userSessionToReturn = null;
+		try {
+			dbConnection = getConnection();
+			pStatement = (PreparedStatement) dbConnection.prepareStatement(selectUserSessionSqlQuery);		
+			pStatement.setInt(1, userId);
+			pStatement.setInt(2, sessionId);
+			
+			ResultSet rs = pStatement.executeQuery();
+			if(rs.next()) {
+				userSessionToReturn = new UserActivitySession(
+						rs.getInt(1),		// sessionId
+						rs.getString(2),	// sessionName
+						rs.getInt(3),		// userId
+						rs.getString(4),	// userName
+						rs.getInt(5)		// user score
+						);
+			}
+			if(pStatement != null) {
+				pStatement.close();
+			}
+			if(rs != null) {
+				rs.close();
+			}
+		} finally {
+			if(dbConnection != null) {
+				dbConnection.close();
+			}
+		}
+		return userSessionToReturn;
+	}
+	
+	
 }
