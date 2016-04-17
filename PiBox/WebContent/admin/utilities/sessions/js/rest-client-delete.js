@@ -13,8 +13,8 @@ function getUrlParameter(sParam)
 
 $(document).ready(function(){
 	// Setup RESTful URL for Ajax call
-	var userId = getUrlParameter('id');
-	var restUrl = ("/PiBox/api/rest/users/"+userId);
+	var sessionId = getUrlParameter('id');
+	var restUrl = ("/PiBox/api/rest/sessions/"+sessionId);
 	
 	// Make Ajax call to get info on current Camera
 	$.ajax({
@@ -28,7 +28,7 @@ $(document).ready(function(){
 	// Form to delete camera is submitted 
 	$("form#deleteForm").submit(function() {
 		// Setup data for Ajax call (Pass in only the id of the camera)
-		restUrl = ("/PiBox/api/rest/users");
+		restUrl = ("/PiBox/api/rest/sessions");
 		var myData = $("form#deleteForm").serialize();
 		
 		//Make Ajax call to delete camera at specified id
@@ -37,7 +37,7 @@ $(document).ready(function(){
 			url: restUrl,
 			data:myData,
 			complete:function() {
-				top.location.href="./getUsers.html";
+				top.location.href="./getSessions.html";
 			}
 		});
 		

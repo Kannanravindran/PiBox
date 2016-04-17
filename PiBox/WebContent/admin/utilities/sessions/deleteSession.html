@@ -1,0 +1,37 @@
+<html>
+<head>
+	<title>Camera</title>
+	
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type="text/javascript" src="/PiBox/js/mustache.js"></script>
+	<script type="text/javascript" src="./js/rest-client-delete.js"></script>
+</head>
+
+<body>
+	<form id="deleteForm">
+		<p>Are you sure you'd like to delete the following session?</p>
+		
+		<div id="tableDiv">
+			<script id="mustacheTemplate">
+			<table>
+				<tr>
+					<td>ID</td>
+					<td>Name</td>
+					<td>Activity</td>
+					<td>Status</td>
+				</tr>
+				<tr>
+					<td><input value="{{id}}"	id="id" name="id" readonly/></td>
+					<td><input value="{{name}}"	id="name" readonly/></td>
+					<td><input value="{{activity}}"id="activity" readonly/></td>
+					<td><input value="{{status}}" id="status" readonly/></td>
+				</tr>
+			</table>
+			</script>
+		</div>
+		
+		<br><input type="submit" value="delete"/>
+	</form>
+	<br><a href="./getSessions.html">Back to sessions</a>
+</body>
+</html> 

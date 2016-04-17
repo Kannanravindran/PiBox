@@ -14,24 +14,20 @@
 	<tbody>
 		<tr>
 			<td>ID</td>
-			<td>Type</td>
-			<td>Username</td>
-			<td>Email</td>
-			<td>First Name</td>
-			<td>Last Name</td>
+			<td>Name</td>
+			<td>Activity</td>
+			<td>Status</td>
 			<td>Edit</td>
 			<td>Delete</td>
 		</tr>
 		{{#.}}
 		<tr>
 			<td>{{id}}</td>
-			<td>{{type}}</td> 
-			<td>{{email}}</td> 
-			<td>{{username}}</td>
-			<td>{{firstName}}</td>
-			<td>{{lastName}}</td>
-			<td><a href="./updateUser.html?id={{id}}">edit</a></td>
-			<td><a href="./deleteUser.html?id={{id}}">delete</a></td>
+			<td>{{name}}</td> 
+			<td>{{activity}}</td> 
+			<td>{{status}}</td>
+			<td><a href="./updateSession.html?id={{id}}">edit</a></td>
+			<td><a href="./deleteSession.html?id={{id}}">delete</a></td>
 		</tr>
 		{{/.}}
 	</tbody>
@@ -39,14 +35,14 @@
 	</script>
 	<br>
 	<br>
-	<a href="./addUsers.html">Add User</a><br>
+	<a href="./addSession.html">Add Session</a><br>
 	<a href="../../index.html">Back to admin page</a>
 </body> 
 
 <script>
 $(document).ready(function(){
 	$.ajax({
-		url: "/PiBox/api/rest/users",
+		url: "/PiBox/api/rest/sessions",
 		dataType:"json"
 	}).then(function(data) {
 		var template = $('#mustacheTemplate').html();

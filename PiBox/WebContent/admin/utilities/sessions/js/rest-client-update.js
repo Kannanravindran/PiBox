@@ -13,8 +13,8 @@ function getUrlParameter(sParam)
 
 $(document).ready(function(){
 	// Get RESTful service's URL with an id parameter
-	var userId = getUrlParameter('id');
-	var restUrl = ("/PiBox/api/rest/users/"+userId);
+	var sessionId = getUrlParameter('id');
+	var restUrl = ("/PiBox/api/rest/sessions/"+sessionId);
 	
 	// Make Ajax call to RESTful service to get camera's current info
 	$.ajax({
@@ -30,7 +30,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		
 		// Set data for Ajax call
-		var restUrl = ("/PiBox/api/rest/users");
+		var restUrl = ("/PiBox/api/rest/sessions");
 		var myData = $("form#editForm").serialize();
 		
 		// Make Ajax call to update camera via RESTful POST method

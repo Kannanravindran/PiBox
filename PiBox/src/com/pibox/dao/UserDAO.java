@@ -1,9 +1,12 @@
 package com.pibox.dao;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -21,16 +24,27 @@ public class UserDAO {
 		Connection dbConnection = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
+			
 			Context initContext = new InitialContext();
 			Context envContext = (Context)initContext.lookup("java:/comp/env");
 			DataSource ds = (DataSource)envContext.lookup("jdbc/pibox");
+			
 			dbConnection = ds.getConnection();
+			
+			if(dbConnection == null) {
+				Logger.getLogger("UserDao").log(Level.SEVERE, "Got null connection!");
+			}
+			
 			return dbConnection;
-		} catch (NamingException e) {
-			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} catch (NamingException e) {
+			e.printStackTrace();
 		}
+		if(dbConnection == null) {
+			Logger.getLogger("UserDao").log(Level.SEVERE, "Got null connection!");
+		}
+		
 		return dbConnection;
 	}
 	
@@ -61,7 +75,9 @@ public class UserDAO {
 			userToCreate.setId(newId);
 			
 		} finally {
-			dbConnection.close();
+			if(dbConnection != null) {
+				dbConnection.close();
+			}
 		}
 		return userToCreate;
 	}
@@ -88,7 +104,9 @@ public class UserDAO {
 						);
 			}
 		} finally {
-			dbConnection.close();
+			if(dbConnection != null) {
+				dbConnection.close();
+			}
 		}
 		return userToReturn;
 	}
@@ -127,7 +145,7 @@ public class UserDAO {
 		Connection dbConnection = null;
 		PreparedStatement pStatement;
 		String selectUserSqlQuery = "UPDATE users SET username=?, password=?, email=?, "
-									+ "firstname=?, lastname=? type=? WHERE id=?";
+									+ "firstname=?, lastname=?, type=? WHERE id=?";
 		UserBean userToReturn = null;
 		try {
 			dbConnection = getConnection();
@@ -139,12 +157,11 @@ public class UserDAO {
 			pStatement.setString(5, userToUpdate.getLastName());
 			pStatement.setString(6, userToUpdate.getType());
 			pStatement.setInt(7, userToUpdate.getId());
-			ResultSet rs = pStatement.executeQuery();
-			if(rs.next()) {
-				userToReturn = userToUpdate;
-			}
+			pStatement.executeUpdate();
 		} finally {
-			dbConnection.close();
+			if(dbConnection != null) {
+				dbConnection.close();
+			}
 		}
 		return userToReturn;
 	}
@@ -155,10 +172,13 @@ public class UserDAO {
 		String selectUserSqlQuery = "DELETE FROM users WHERE id=?";
 		try {
 			dbConnection = getConnection();
-			pStatement = (PreparedStatement) dbConnection.prepareStatement(selectUserSqlQuery);			
-			pStatement.executeQuery();
+			pStatement = (PreparedStatement) dbConnection.prepareStatement(selectUserSqlQuery);
+			pStatement.setInt(1, userIdToDelete);
+			pStatement.executeUpdate();
 		} finally {
-			dbConnection.close();
+			if(dbConnection != null) {
+				dbConnection.close();
+			}
 		}
 	}
 	
@@ -179,7 +199,9 @@ public class UserDAO {
 				userTypeToReturn = rs.getString(1);	// type
 			}
 		} finally {
-			dbConnection.close();
+			if(dbConnection != null) {
+				dbConnection.close();
+			}
 		}
 		return userTypeToReturn;
 	}
@@ -206,7 +228,9 @@ public class UserDAO {
 						);
 			}
 		} finally {
-			dbConnection.close();
+			if(dbConnection != null) {
+				dbConnection.close();
+			}
 		}
 		return userToReturn;
 	}

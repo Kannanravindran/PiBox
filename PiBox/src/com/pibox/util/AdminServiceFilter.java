@@ -52,7 +52,7 @@ public class AdminServiceFilter implements Filter {
 		// user not in session
 		} else {
 			httpResponse = (HttpServletResponse) response;
-			httpResponse.sendRedirect("/PiBox/index.html");
+			httpResponse.sendRedirect("/PiBox/Login");
 		}
 	}
 
