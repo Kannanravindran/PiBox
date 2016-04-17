@@ -154,12 +154,25 @@ public class SessionRest {
 	@Path("{sessionId}/{userId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addSessionForUser( @PathParam("sessionId") int sessionId,
-										@PathParam("userId") int userIdToAdd) {
+										@PathParam("userId") int userId,
+										@FormParam("userScore") int userScore) {
 		Response response = null;
 		SessionDAO sessionDao = new SessionDAO();
 		try {
-			SessionBean currentSessionStatus = sessionDao.addUserToSession(userIdToAdd, sessionId);
-			response = Response.ok(currentSessionStatus).build();
+			UserActivitySession currentSession = sessionDao.getUserSessionForSessionId(userId, sessionId);
+			
+			// update score
+			if(currentSession != null) {
+				currentSession.setUserScore(userScore);
+				currentSession = sessionDao.updateUserSession(currentSession);
+				response = Response.ok(currentSession).build();
+			
+			// if user has no previous session, create a new session
+			} else {
+				SessionBean currentSessionStatus = sessionDao.addUserToSession(userId, sessionId);
+				response = Response.ok(currentSessionStatus).build();
+			}			
+			
 		} catch (SQLException e) {
 			response = Response.status(500).build();
 			e.printStackTrace();

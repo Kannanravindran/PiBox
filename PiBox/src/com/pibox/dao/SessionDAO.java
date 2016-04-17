@@ -272,8 +272,8 @@ public class SessionDAO {
 		try {
 			dbConnection = getConnection();
 			pStatement = (PreparedStatement) dbConnection.prepareStatement(selectUserSessionSqlQuery);		
-			pStatement.setInt(1, userId);
-			pStatement.setInt(2, sessionId);
+			pStatement.setInt(1, sessionId);
+			pStatement.setInt(2, userId);
 			
 			ResultSet rs = pStatement.executeQuery();
 			if(rs.next()) {
@@ -299,5 +299,32 @@ public class SessionDAO {
 		return userSessionToReturn;
 	}
 	
-	
+	public UserActivitySession updateUserSession(UserActivitySession updatedSession) throws SQLException {
+		Connection dbConnection = null;
+		PreparedStatement pStatement;
+		String selectUserSessionSqlQuery = "UPDATE sessionuserassoc "
+											+ "SET userScore=? "
+											+ "WHERE sessionId=? "
+												+ "AND userId=?";
+		UserActivitySession userSessionToReturn = null;
+		try {
+			dbConnection = getConnection();
+			pStatement = (PreparedStatement) dbConnection.prepareStatement(selectUserSessionSqlQuery);		
+			pStatement.setInt(1, updatedSession.getUserScore());
+			pStatement.setInt(2, updatedSession.getSessionId());
+			pStatement.setInt(3, updatedSession.getUserId());
+			
+			pStatement.executeUpdate();
+			
+			userSessionToReturn = updatedSession;
+			if(pStatement != null) {
+				pStatement.close();
+			}
+		} finally {
+			if(dbConnection != null) {
+				dbConnection.close();
+			}
+		}
+		return userSessionToReturn;
+	}
 }
