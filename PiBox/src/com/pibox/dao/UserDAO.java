@@ -188,12 +188,13 @@ public class UserDAO {
 	public String getUserTypeForUsername(String username) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement pStatement;
-		String selectUserSqlQuery = "SELECT type FROM users"
-									+ "WHERE username = ?";
+		String selectUserSqlQuery = "SELECT type FROM users "
+									+ "WHERE username=?";
 		String userTypeToReturn = null;
 		try {
 			dbConnection = getConnection();
-			pStatement = (PreparedStatement) dbConnection.prepareStatement(selectUserSqlQuery);			
+			pStatement = (PreparedStatement) dbConnection.prepareStatement(selectUserSqlQuery);		
+			pStatement.setString(1, username);
 			ResultSet rs = pStatement.executeQuery();
 			if(rs.next()) {
 				userTypeToReturn = rs.getString(1);	// type

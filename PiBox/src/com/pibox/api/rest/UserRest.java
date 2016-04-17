@@ -73,6 +73,11 @@ public class UserRest {
 								@FormParam("lastName") String lastName) {
 		Response response = null;
 		
+		// type is user by default
+		if(type == null) {
+			type = "User";
+		}
+		
 		UserBean userToCreate = new UserBean(username, password, type, email, firstName, lastName);
 		UserBean userToReturn;
 		try {

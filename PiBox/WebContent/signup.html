@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="US-ASCII">
+		<title>Login Page</title>
+		<script type="text/javascript" src="/PiBox/js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="/PiBox/js/mustache.js"></script>
+	</head>
+	<body>
+		<form id="editForm">
+			<table>
+				<tr>
+					<td>Username (required):</td>
+					<td><input type="text" id="username" name="username"></td>
+				</tr>
+				<tr>
+					<td>Email:</td>
+					<td><input type="text" id="email" name="email"></td>
+				</tr>
+				<tr>
+					<td>First Name</td>
+					<td><input type="text" id="firstname" name="firstname"></td>
+				</tr>
+				<tr>
+					<td>Last Name:</td>
+					<td><input type="text" id="lastname" name="lastname"></td>
+				</tr>
+			</table>
+			<input type="submit" value="Create User">
+		</form>
+	</body>
+	<script>
+	$(document).ready(function(){
+				
+		// Call when form is submitted
+		$("form#editForm").submit(function(event) {
+			event.preventDefault();
+			
+			// Set data for Ajax call
+			var restUrl = ("/PiBox/api/rest/users");
+			var myData = $("form#editForm").serialize();
+			
+			// Make Ajax call to update camera via RESTful POST method
+			$.ajax({
+				type: 'POST',
+				url: restUrl,
+				data:myData,
+				dataType: "json",
+				success: function(data, textStatus, jqXHR) {
+					alert("Your username has been created!: " + jqXHR.status);
+					window.location.href = "/PiBox/Login";
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert("Error signing up with status: " + jqXHR.status + " Request sent to: " + restUrl);
+				}
+			});
+		});// end form.submit()
+		
+	});// end document.ready()
+	</script>
+</html>

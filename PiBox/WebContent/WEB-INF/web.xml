@@ -39,6 +39,26 @@
   </servlet-mapping>
   
   <servlet>
+  	<servlet-name>Logout Servlet</servlet-name>
+  	<servlet-class>com.pibox.servlet.LogoutServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>Logout Servlet</servlet-name>
+  	<url-pattern>/Logout</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>Welcome Servlet</servlet-name>
+  	<servlet-class>com.pibox.servlet.WelcomeServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>Welcome Servlet</servlet-name>
+  	<url-pattern>/Welcome</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
   	<servlet-name>Error Servlet</servlet-name>
   	<servlet-class>com.pibox.servlet.ErrorServlet</servlet-class>
   </servlet>
@@ -57,6 +77,16 @@
   <filter-mapping>
     <filter-name>AdminFilter</filter-name>
     <url-pattern>/admin/*</url-pattern>
+  </filter-mapping>
+  
+  <filter>
+    <filter-name>MemberFilter</filter-name>
+    <filter-class>com.pibox.util.MemberServiceFilter</filter-class>
+  </filter>
+  
+  <filter-mapping>
+    <filter-name>MemberFilter</filter-name>
+    <url-pattern>/member/*</url-pattern>
   </filter-mapping>
     
   <security-constraint>

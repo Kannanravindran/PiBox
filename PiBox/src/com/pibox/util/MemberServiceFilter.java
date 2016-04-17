@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 import com.pibox.bean.UserBean;
 import com.pibox.dao.UserDAO;
 
-public class AdminServiceFilter implements Filter {
+public class MemberServiceFilter implements Filter {
 	public FilterConfig filterConfig;
 	UserDAO userDao;
 
@@ -41,10 +41,10 @@ public class AdminServiceFilter implements Filter {
 				e.printStackTrace();
 			}
 			if(incomingUserType != null) {
-				// user is of type admin, continue filter chain
-				if(incomingUserType.equalsIgnoreCase("Admin")) {
+				// user is of type user, continue filter chain
+				if(incomingUserType.equalsIgnoreCase("User")) {
 					chain.doFilter(request, response);
-				// user not admin; deny access
+				// not a user; deny access
 				} else {
 					httpResponse = (HttpServletResponse) response;
 					httpResponse.sendRedirect("/PiBox/error.html");
