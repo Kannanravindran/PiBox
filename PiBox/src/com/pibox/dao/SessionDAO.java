@@ -53,15 +53,20 @@ public class SessionDAO {
 	public SessionBean createSession(SessionBean sessionToCreate) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement pStatement;
-		String createSessionSqlQuery = "INSERT INTO sessions (name, activity)"
-									+ " VALUES(?, ?)";
+		String createSessionSqlQuery = "INSERT INTO pibox.sessions (name, activity, status)"
+									+ " VALUES(?, ?, ?)";
 		try {
+			if(sessionToCreate.getStatus() == null) {
+				sessionToCreate.setStatus("Wait");
+			}
+			
 			dbConnection = getConnection();
 			pStatement = (PreparedStatement) dbConnection.prepareStatement(createSessionSqlQuery);
 			pStatement.setString(1, sessionToCreate.getName());
 			pStatement.setString(2, sessionToCreate.getActivity());
+			pStatement.setString(3, sessionToCreate.getStatus());
 			pStatement.executeUpdate();
-			// get id of user, set it, then return it
+			// get id of user, set it, then return ita
 			
 			//Get generated key
 			int newId = -1;
@@ -88,7 +93,7 @@ public class SessionDAO {
 	public SessionBean readSession(int sessionIdToRead) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement pStatement;
-		String readSessionSqlQuery = "SELECT name, activity, status FROM sessions WHERE id = ?";
+		String readSessionSqlQuery = "SELECT name, activity, status FROM pibox.sessions WHERE id = ?";
 		SessionBean sessionToReturn = null;
 		try {
 			dbConnection = getConnection();
@@ -121,7 +126,7 @@ public class SessionDAO {
 	public List<SessionBean> readAllSessions() throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement pStatement;
-		String readAllSessionsSqlQuery = "SELECT id, name, activity, status FROM sessions";
+		String readAllSessionsSqlQuery = "SELECT id, name, activity, status FROM pibox.sessions";
 		SessionBean sessionToAdd = null;
 		ArrayList<SessionBean> sessionsToReturn = new ArrayList<SessionBean>();
 		try {
@@ -155,7 +160,7 @@ public class SessionDAO {
 	public SessionBean updateSession(SessionBean sessionToUpdate) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement pStatement;
-		String updateSessionSqlQuery = "UPDATE sessions SET name=?, activity=?, status=? "
+		String updateSessionSqlQuery = "UPDATE pibox.sessions SET name=?, activity=?, status=? "
 									+ "WHERE id=?";
 		SessionBean sessionToReturn = null;
 		try {
@@ -180,7 +185,7 @@ public class SessionDAO {
 	public void deleteSession(int sessionIdToDelete) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement pStatement;
-		String deleteSessionSqlQuery = "DELETE FROM sessions WHERE id=?";
+		String deleteSessionSqlQuery = "DELETE FROM pibox.sessions WHERE id=?";
 		try {
 			dbConnection = getConnection();
 			pStatement = (PreparedStatement) dbConnection.prepareStatement(deleteSessionSqlQuery);
@@ -202,7 +207,7 @@ public class SessionDAO {
 		Connection dbConnection = null;
 		PreparedStatement pStatement;
 		String selectUserSessionSqlQuery = "SELECT s.id, s.name, u.id, u.username, j.userScore "
-											+ "FROM sessions s, users u, sessionUserAssoc j "
+											+ "FROM pibox.sessions s, users u, sessionuserassoc j "
 											+ "WHERE j.userId = u.id AND "
 												+ "j.sessionId = s.id AND "
 												+ "s.id = ?";
@@ -263,7 +268,7 @@ public class SessionDAO {
 		Connection dbConnection = null;
 		PreparedStatement pStatement;
 		String selectUserSessionSqlQuery = "SELECT s.id, s.name, u.id, u.username, j.userScore "
-											+ "FROM sessions s, users u, sessionUserAssoc j "
+											+ "FROM pibox.sessions s, users u, sessionUserAssoc j "
 											+ "WHERE j.userId = u.id AND "
 												+ "j.sessionId = s.id AND "
 												+ "s.id = ? AND "
@@ -337,8 +342,8 @@ public class SessionDAO {
 		try {
 			dbConnection = getConnection();
 			pStatement = (PreparedStatement) dbConnection.prepareStatement(selectUserSessionSqlQuery);		
-			pStatement.setInt(1, sessionToDelete.getUserScore());
-			pStatement.setInt(2, sessionToDelete.getSessionId());
+			pStatement.setInt(1, sessionToDelete.getSessionId());
+			pStatement.setInt(2, sessionToDelete.getUserId());
 			
 			pStatement.executeUpdate();
 			

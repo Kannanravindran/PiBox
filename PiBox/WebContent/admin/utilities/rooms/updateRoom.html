@@ -47,13 +47,15 @@
 				<td>Username</td>
 				<td>UserScore</td>
 				<td></td>
+				<td></td>
 			</tr>
 			{{#userSessions}}
 			<tr>
 				<td>{{userId}}</td>
 				<td>{{userName}}</td> 
 				<td>{{userScore}}</td> 
-				<td><a href="./updateUserSession.html?sessionId={{id}}&userId={{userId}}">Edit User Session</a></td>
+				<td><a href="./updateUserSession.html?sessionId={{id}}&userId={{userId}}">Edit</a></td>
+				<td><a href="./deleteUserSession.html?sessionId={{id}}&userId={{userId}}">Kick</a></td>
 			</tr>
 			{{/userSessions}}
 		</tbody>

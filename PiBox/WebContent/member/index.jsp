@@ -6,6 +6,7 @@
 		
 	</head>
 	Welcome <%= session.getAttribute("username") %>!
+	ID: <%= session.getAttribute("userId") %>
 	
 	<p>Here are a list of available sessions:</p>
 	
@@ -25,7 +26,7 @@
 			<td>{{name}}</td> 
 			<td>{{activity}}</td> 
 			<td>{{status}}</td>
-			<td><a href="./updateRoom.html?id={{id}}">Enter Room</a></td>
+			<td><a href="./activity/quick-reflex.jsp?sessionId={{id}}">Enter Room</a></td>
 		</tr>
 		{{/.}}
 	</tbody>

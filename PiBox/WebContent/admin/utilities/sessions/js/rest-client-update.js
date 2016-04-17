@@ -30,7 +30,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		
 		// Set data for Ajax call
-		var restUrl = ("/PiBox/api/rest/sessions");
+		var restUrl = ("/PiBox/api/rest/sessions/"+sessionId);
 		var myData = $("form#editForm").serialize();
 		
 		// Make Ajax call to update camera via RESTful POST method

@@ -73,9 +73,13 @@ public class SessionRest {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createSession( @FormParam("name") String name,
-								@FormParam("activity") String activity,
-								@DefaultValue("wait") @FormParam("status") String status) {
+									@FormParam("activity") String activity,
+									@FormParam("status") String status) {
 		Response response = null;
+		
+		if(status == null) {
+			status = "Wait";
+		}
 		
 		SessionBean sessionToCreate = new SessionBean(name, activity, status);
 		SessionBean sessionToReturn;
@@ -91,8 +95,9 @@ public class SessionRest {
 	}
 	
 	@PUT
+	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateSession( @FormParam("id") int id,
+	public Response updateSession( @PathParam("id") int id,
 									@FormParam("name") String name,
 									@FormParam("activity") String activity,
 									@FormParam("status") String status) {
@@ -142,7 +147,12 @@ public class SessionRest {
 		SessionDAO sessionDao = new SessionDAO();
 		try {
 			UserActivitySession userSession = sessionDao.getUserSessionForSessionId(userId, sessionId);
-			response = Response.ok(userSession).build();
+			if(userSession != null) {
+				response = Response.ok(userSession).build();
+			} else {
+				response = Response.status(404).build();
+			}
+			
 		} catch (SQLException e) {
 			response = Response.status(500).build();
 			e.printStackTrace();
@@ -180,4 +190,21 @@ public class SessionRest {
 		return response;
 	}
 	
+	@DELETE
+	@Path("{sessionId}/{userId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteUserSession( @PathParam("sessionId") int sessionId,
+									@PathParam("userId") int userId) {
+		Response response = null;
+		SessionDAO sessionDao = new SessionDAO();
+		UserActivitySession sessionToDelete = new UserActivitySession(sessionId, null, userId, null, -1);
+		try {
+			sessionDao.deleteUserSession(sessionToDelete);
+			response = Response.noContent().build();
+		} catch (SQLException e) {
+			response = Response.status(500).build();
+			e.printStackTrace();
+		}
+		return response;
+	}
 }
