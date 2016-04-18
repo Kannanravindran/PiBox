@@ -268,7 +268,7 @@ public class SessionDAO {
 		Connection dbConnection = null;
 		PreparedStatement pStatement;
 		String selectUserSessionSqlQuery = "SELECT s.id, s.name, u.id, u.username, j.userScore "
-											+ "FROM pibox.sessions s, users u, sessionUserAssoc j "
+											+ "FROM pibox.sessions s, users u, sessionuserassoc j "
 											+ "WHERE j.userId = u.id AND "
 												+ "j.sessionId = s.id AND "
 												+ "s.id = ? AND "
