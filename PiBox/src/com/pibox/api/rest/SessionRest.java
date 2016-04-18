@@ -121,6 +121,34 @@ public class SessionRest {
 		return response;
 	}
 	
+	@PUT
+	@Path("{id}/status")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateSessionStatus( @PathParam("id") int id,
+									@FormParam("status") String status) {
+		Response response = null;
+		
+		SessionDAO sessionDao = new SessionDAO();
+		
+		SessionBean sessionToUpdate = null;
+		try {
+			sessionToUpdate = sessionDao.readSession(id);
+			sessionToUpdate.setStatus(status);
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
+		SessionBean sessionToReturn = null;
+		try {
+			sessionToReturn = sessionDao.updateSession(sessionToUpdate);
+			response = Response.ok(sessionToReturn).build();
+		} catch (SQLException e) {
+			response = Response.status(500).build();
+			e.printStackTrace();
+		}
+		return response;
+	}
+	
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteSession( @FormParam("id") int sessionId) {

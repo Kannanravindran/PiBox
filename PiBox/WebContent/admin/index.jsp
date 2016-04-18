@@ -26,12 +26,23 @@
 			<td>{{name}}</td> 
 			<td>{{activity}}</td> 
 			<td>{{status}}</td>
-			<td><a href="./activity/{{activity}}.jsp?sessionId={{id}}">Enter Room</a></td>
+			<td><a href="./activity/{{activity}}-admin.jsp?sessionId={{id}}">Enter Room</a></td>
 		</tr>
 		{{/.}}
 	</tbody>
 	</table>
 	</script>
+	
+	<br/>
+	<br/>
+	<br/>
+	<p>Admin Tools</p>
+	<br/>
+	<br/>
+	
+	<a href="./utilities/users/getUsers.html">Users</a> <br/>
+	<a href="./utilities/sessions/getSessions.html">Sessions</a> <br/>
+	<a href="./utilities/rooms/getRooms.html">Sessions List</a> <br/>
 	
 	<p>Logout: <a href="/PiBox/Logout"> here </a></p>
 
