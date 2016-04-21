@@ -1,255 +1,275 @@
+<html>
+	<head>
+		<Title>Quick Reflex</Title>
+		<script type="text/javascript" src="/PiBox/js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="/PiBox/js/mustache.js"></script>
+		<link rel="stylesheet" type="text/css" href="./css/quick-reflex.css">
+		<script type="text/javascript" src="js/Game.js"></script>
+	</head>
+	<div id="AppContainer">
+		<div id="sessionInfo">
+			<table>
+				<tr>
+					<td>Session Name: </td>
+					<td><p id="sessionName"></p></td>
+				</tr>
+				<tr>
+					<td>Activity: </td>
+					<td><p id="sessionActivity"></p></td>
+				</tr>
+			</table>
+		</div>
+		
+		<div id="waiting">
+			Waiting for host to start...
+			<br/>
+			<br/>
+			Here's who you'll be playing with:
+			<div id="startingUsersTemplateDiv"></div>
+			<script id="startingUsersTemplate" type="x-tmpl-mustache">
+				<p>Usernames: </p>
+				<list>
+					{{#userSessions}}
+					<li>
+						<p>{{userName}}</p> 
+					</li>
+					{{/userSessions}}
+				</list>
+			</script>
+		</div>
+		
+		<div id="tooLate">
+			The session has already started, however you can spectate:
+			<br/>
+			Here's the current scoring:
+			<div id="spectateUsersTemplateDiv"></div>
+			<script id="spectateUsersTemplate" type="x-tmpl-mustache">
+				<p>Usernames: </p>
+				<table>
+						<td>Username</td>
+						<td>Score</td>
+					</tr>
+					{{#userSessions}}
+					<tr>
+						<td>{{userName}}</td> 
+						<td>{{userScore}}</td> 
+					</tr>
+					{{/userSessions}}
+				</list>
+			</script>
+		</div>
+		<!-- Game info starts-->
+		<br>
+		<div id="dataContainerOrientation">
+			No device Orientation.	
+		</div>
+		<div id="positionInfo">
+			Waiting for host to send command
+		</div>
+		<br>
+		<!-- Game data ends -->
+		<div id="finish">
+			The session has ended!
+		</div>
+	</div>
+	
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<a href="/PiBox/member/">Back to member page</a>
+	
 </html>
-      <head>
-        <link rel="stylesheet" type="text/css" href="sweetalert-master/dist/sweetalert.css">
-        <script src="sweetalert-master/dist/sweetalert.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-        <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
-      </head>
-      <body>
-        <p align ="center"><h1> Simon Says ... </h1><br>
-        <h2> Select a game mode </h2>
-        <h3><select id="commandlist" onChange="init()">
-          <option class="placeholder" selected disabled value="" > Select game option</option>
-          <option value="left">Turn Left</option>
-          <option value="right">Turn Right</option>
-          <option value="up">Turn up</option>
-          <option value="down">Turn Down</option>
-        </select></h3>
-        </p>
-        <!--
-        <script>
-        $("#commandlist").change(function() {
-            swal({
-              title: "Tilt",
-              text: "You have only 3 seconds to play",
-              showConfirmButton:false,
-              timer: 3000
-            });
-        });
-        </script>
-        -->
-        <script>
-        function init() {
-              //Find our div containers in the DOM
-              var dataContainerOrientation = document.getElementById('dataContainerOrientation');
-              var dataContainerMotion = document.getElementById('dataContainerMotion');
-              var halfway = 0;
-              var alpha;
-              var beta;
-              var gamma;
-              var xhttp = new XMLHttpRequest();
-              var id;
-              var score = 0;
-              var sel= document.getElementById('commandlist');
-              option = sel.options[sel.selectedIndex].value;
-                        if ( option == "left"){
-                          // positionInfo.innerHTML = '<h2 style="color:brown"><b><i>Keep your mobile vertical, then rotate left</i></b></h2>';
-                          var htmlcontent = '<h2 style="color:brown"><b>Keep your mobile vertical, then rotate left</b></h2>';
-                          swal({
-                                   title: "Simon says rotate "+option,
-                                   text: htmlcontent,
-                                   showConfirmButton:false,
-                                   html: true,
-                                   timer: 3000
-                              });
-                        }
-                        else if (option == "right"){
-                          var htmlcontent =  '<h2 style="color:brown"><b>Keep your mobile vertical, then rotate right</b></h2>';
-                          // positionInfo.innerHTML = '<h2 style="color:brown"><b><i>Keep your mobile vertical, then rotate right</i></b></h2>';
-                          swal({
-                                   title: "Simon says rotate "+option,
-                                   text: htmlcontent,
-                                   showConfirmButton:false,
-                                   html: true,
-                                   timer: 3000
-                              });
-                        }
-                        else if ( option == "up"){
-                          // positionInfo.innerHTML = '<h2 style="color:brown"><b><i>Keep your mobile horizontal, then flipup</i></b></h2>';
-                          var htmlcontent = '<h2 style="color:brown"><b>Keep your mobile horizontal, then flipup</b></h2>';
-                          swal({
-                                   title: "Simon says flip "+option,
-                                   text: htmlcontent,
-                                   showConfirmButton:false,
-                                   html: true,
-                                   timer: 3000
-                              });
-                        }
-                        else if (option == "down"){
-                          // positionInfo.innerHTML = '<h2 style="color:brown"><b><i>Keep your mobile horizontal, then flipdown</i></b></h2>';
-                          var htmlcontent = '<h2 style="color:brown"><b>Keep your mobile horizontal, then flipdown</b></h2>';
-                          swal({
-                                   title: "Simon says flip "+option,
-                                   text: htmlcontent,
-                                   showConfirmButton:false,
-                                   html: true,
-                                   timer: 10000
-                              });
-                        }
-                        else
-                          positionInfo.innerHTML = '<h2 style="color:brown"><b><i>Select a game option</i></b></h2>';
-              //Check for support for DeviceOrientation event
-              if(window.DeviceOrientationEvent) {
-                window.addEventListener('deviceorientation', function(event) {
-                        alpha = Math.round(event.alpha);
-                        beta = Math.round(event.beta);
-                        gamma = Math.round(event.gamma);
-                        if(alpha!=null || beta!=null || gamma!=null)
-                          dataContainerOrientation.innerHTML = 'alpha: ' + alpha + '<br/>beta: ' + beta + '<br />gamma: ' + gamma;
-                        if ( option == "left")
-                          rotateleft();
-                        else if (option == "right")
-                          rotateright();
-                        else if ( option == "up")
-                          flipup();
-                        else if (option == "down")
-                          flipdown();
-                        else
-                          return;
-                      }, false);
-              }
-              function rotateleft(){
-                if (halfway==0 && beta > 65 && beta <115){
-                  // positionInfo.innerHTML = '<h2 style="color:blue"><b><i>Good, Now rotate left</i></b></h2>';
-                  var htmlcontent = '<h2 style="color:blue"><b><i>Good, Now rotate left</i></b></h2>';
-                          swal({
-                                   title: "Simon says flip "+option,
-                                   text: htmlcontent,
-                                   showConfirmButton:false,
-                                   html: true,
-                                   timer: 3000
-                              });
-                  halfway = 1;
-                }
-                if (halfway==1 && alpha >65 && alpha < 120){
-                  // positionInfo.innerHTML = '<h2 style="color:green"><b><i>Awesome, You did it</i></b></h2>';
-                  var htmlcontent = '<h2 style="color:green"><b><i>Awesome, You did it</i></b></h2>';
-                          swal({
-                                   title: "Simon says flip "+option,
-                                   text: htmlcontent,
-                                   showConfirmButton:false,
-                                   html: true,
-                                   timer: 3000
-                              });
-                  halfway = 2;
-                  score = score +5;
-                  url = 'https://localhost:8443/PiBox/api/rest/sessions/1/'+id;
-                  xhttp.open("POST", url, true);
-                  xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-                  xhttp.send("score="+score);
-                }
-              }
-              function rotateright(){
-                if (halfway==0 && beta > 65 && beta <115){
-                  // positionInfo.innerHTML = '<h2 style="color:blue"><b><i>Good, Now rotate right</i></b></h2>';
-                  var htmlcontent = '<h2 style="color:blue"><b><i>Good, Now rotate right</i></b></h2>';
-                          swal({
-                                   title: "Simon says flip "+option,
-                                   text: htmlcontent,
-                                   showConfirmButton:false,
-                                   html: true,
-                                   timer: 3000
-                              });
-                  halfway = 1;
-                }
-                if (halfway==1 && alpha < 280 && alpha > 250){
-                  // positionInfo.innerHTML = '<h2 style="color:green"><b><i>Awesome, You did it</i></b></h2>';
-                  var htmlcontent = '<h2 style="color:green"><b><i>Awesome, You did it</i></b></h2>';
-                          swal({
-                                   title: "Simon says flip "+option,
-                                   text: htmlcontent,
-                                   showConfirmButton:false,
-                                   html: true,
-                                   timer: 3000
-                              });
-                  halfway = 2;
-                  score = score +5;
-                  url = 'https://localhost:8443/PiBox/api/rest/sessions/1/'+id;
-                  xhttp.open("POST", url, true);
-                  xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-                  xhttp.send("score="+score);
-                }
-              }
-              function flipup(){ //yet to be altered
-                if (halfway==0 && beta > -15 && beta <15){
-                  // positionInfo.innerHTML = '<h2 style="color:blue"><b><i>Good, Now flipup</i></b></h2>';
-                  var htmlcontent = '<h2 style="color:blue"><b><i>Good, Now flipup</i></b></h2>';
-                          swal({
-                                   title: "Simon says flip "+option,
-                                   text: htmlcontent,
-                                   showConfirmButton:false,
-                                   html: true,
-                                   timer: 3000
-                              });
-                  halfway = 1;
-                }
-                if (halfway==1 && beta >65 && beta < 115){
-                  // positionInfo.innerHTML = '<h2 style="color:green"><b><i>Awesome, You did it</i></b></h2>';
-                  var htmlcontent = '<h2 style="color:green"><b><i>Awesome, You did it</i></b></h2>';
-                          swal({
-                                   title: "Simon says flip "+option,
-                                   text: htmlcontent,
-                                   showConfirmButton:false,
-                                   html: true,
-                                   timer: 3000
-                              });
-                  halfway = 2;
-                  score = score +5;
-                  url = 'https://localhost:8443/PiBox/api/rest/sessions/1/'+id;
-                  xhttp.open("POST", url, true);
-                  xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-                  xhttp.send("score="+score);
-                }
-              }
-              function flipdown(){ //yet to be altered
-                if (halfway==0 && beta > -15 && beta <15){
-                  // positionInfo.innerHTML = '<h2 style="color:blue"><b><i>Good, Now flipdown</i></b></h2>';
-                  var htmlcontent = '<h2 style="color:blue"><b><i>Good, Now flipdown</i></b></h2>';
-                          swal({
-                                   title: "Simon says flip "+option,
-                                   text: htmlcontent,
-                                   showConfirmButton:false,
-                                   html: true,
-                                   timer: 3000
-                              });
-                  halfway = 1;
-                }
-                if (halfway==1 && beta < -65 && beta > -120){
-                  // positionInfo.innerHTML = '<h2 style="color:green"><b><i>Awesome, You did it</i></b></h2>';
-                  var htmlcontent = '<h2 style="color:green"><b><i>Awesome, You did it</i></b></h2>';
-                          swal({
-                                   title: "Simon says flip "+option,
-                                   text: htmlcontent,
-                                   showConfirmButton:false,
-                                   html: true,
-                                   timer: 3000
-                              });
-                  halfway = 2;
-                  score = score +5;
-                  url = 'https://localhost:8443/PiBox/api/rest/sessions/1/'+id;
-                  xhttp.open("POST", url, true);
-                  xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-                  xhttp.send("score="+score);
-                }
-              }
-            }
-        </script>
-        <div id="dataContainerOrientation">
-          No device orientation data
-        </div>
-        <div id="dataContainerMotion">
 
-        </div>
-        <br>
-        <div id = "positionInfo">
-          <h2 style="color:black"><b><i>Please select a game option</i></b></h2>
-        </div>
-        <div>
-          <h2></h2>
-        </div>
-        <br>
-        <form>
-        <h2><input type="button" onClick = "history.go(0)" value="Reset Game"></h2>
-        </form>
-      </body>
-    </html>
+<script>
+var SessionInfo;
+var boolSessionStarted = false;
+var sessionId = getUrlParameter('sessionId');
+var userId = <%= session.getAttribute("userId") %>;
+var nUserScore = 0;
+var cmdStatus = 0;
+var command;
+
+function updateScore(incrementByMe) {
+	nUserScore = nUserScore + incrementByMe;
+	console.log("get ALL the points! " + nUserScore);
+}
+
+//Function used to get parameters from URL
+function getUrlParameter(sParam)
+{
+	var sPageURL = window.location.search.substring(1);
+	var sURLVariables = sPageURL.split('&');
+	for(var i = 0; i < sURLVariables.length; i++) {
+		var sParameterName = sURLVariables[i].split('=');
+		if (sParameterName[0] == sParam) {
+			return sParameterName[1];
+		}
+	}
+}
+
+// First time entering the session... register & get session information
+function registerForSession() {
+	$.ajax({
+		url: "/PiBox/api/rest/sessions/"+sessionId+"/"+userId,
+		type:"POST"
+	}).then(function(data) {
+		console.log(data);
+		SessionInfo = data;
+		location.reload();
+	});
+}
+//Getting the commandId and direction
+function startGame() {
+	$.ajax({
+		url: "/PiBox/api/rest/sessions/"+sessionId,
+		type:"GET"
+	}).then(function(data) {
+		console.log(data.status);
+		if (data.status.stepId == cmdStatus){
+			console.log("do nothing!");
+		}
+		else if (data.status.commandId == cmdStatus+1){
+			console.log("startgame() - " + data.status.direction);
+			cmdStatus = data.status.stepId;
+			init(data.status.direction);
+		}
+		else {
+			//alert('Some problem occured with the connection. Please contact the host.');
+		}
+	});
+}
+
+//Update gaming session
+function pollSession() {
+	$.ajax({
+		url: "/PiBox/api/rest/sessions/"+sessionId,
+		dataType:"json",
+		complete: function() {
+			setTimeout(pollSession, 2000);
+		}
+	}).then(function(data) {	
+		// Game is waiting to be started
+		if(data.status == "Wait") {
+			console.log('on wait');
+			boolSessionStarted = true;
+			$("#waiting").show();
+			pollUserScore();
+			
+			// display users entering room
+			var template = $('#startingUsersTemplate').html();
+			var out = Mustache.render(template, data);
+			$('#startingUsersTemplateDiv').html(out);
+		}
+		
+		// Game is ending / ended
+		else if(data.status == "Stop") {
+			if(boolSessionStarted == false) {
+				console.log('on stop - inactive');
+				$("#waiting").hide();
+				$("#live").hide();
+				$("#tooLate").show();
+				
+				// display users entering room
+				var template = $('#spectateUsersTemplate').html();
+				var out = Mustache.render(template, data);
+				$('#spectateUsersTemplateDiv').html(out);
+			} else {
+				console.log('on stop');
+				$("#live").hide();
+				$("#finish").show();
+			}
+		}
+		
+		// Game is started
+		else {
+			
+			if(boolSessionStarted == false) {
+				console.log('in progress - no participation');
+				$("#waiting").hide();
+				$("#live").hide();
+				$("#tooLate").show();
+				
+				
+				// display users entering room
+				var template = $('#spectateUsersTemplate').html();
+				var out = Mustache.render(template, data);
+				$('#spectateUsersTemplateDiv').html(out);
+				
+			} else {
+				console.log('in progress - active participation');
+				$("#waiting").hide();
+				$("#live").show();
+				var sessionStatus = JSON.parse(data.status);
+				
+				console.log('will compare: ' + sessionStatus.status.stepId + " == " + cmdStatus )
+				console.log(sessionStatus);
+				if (data.status.stepId == cmdStatus+1){
+					console.log("startgame() - " + sessionStatus.status.direction);
+					cmdStatus = sessionStatus.status.stepId;
+					init(sessionStatus.status.direction);
+				}
+				
+				//var outcome = startGame(); // initialize the game
+				//if(Boolean(outcome) == true)
+				//	updateScore(10);
+				//else
+				//	updateScore(0);
+
+			}
+		}
+	});
+}
+
+//Update gaming session
+function pollUserScore() {
+	$.ajax({
+		url: "/PiBox/api/rest/sessions/"+sessionId+"/"+userId,
+		dataType:"json",
+		type:"POST",
+		data: {
+			userScore: nUserScore
+		},
+		complete: function() {
+			setTimeout(pollUserScore, 4000);
+		}
+	}).then(function(data) {
+		console.log('on poll user score: ' + nUserScore);
+	});
+}
+
+$(document).ready(function(){	
+	// get session info
+	var sessionId = getUrlParameter('sessionId');
+	$.ajax({
+		url: "/PiBox/api/rest/sessions/"+sessionId,
+		dataType:"json"
+	}).then(function(data) {
+		console.log(data);
+		SessionInfo = data;
+		
+		// update static fields
+		$("#sessionName").text(SessionInfo.name);
+		$("#sessionActivity").text(SessionInfo.activity);
+		$("#sessionInfoStatus").text(SessionInfo.status);
+	});
+	
+	$.ajax({
+		url: "/PiBox/api/rest/sessions/"+sessionId+"/"+userId,
+		dataType:"json",
+		statusCode: {
+			404:function() {
+				if(confirm("Welcome to the room! Would you like to participate?")) {
+					registerForSession();
+				} else {
+					window.location = "/PiBox/member/"
+				}
+			}
+		}
+	}).then(function(data) {
+		pollSession();
+	});
+	
+	
+});
+</script>
