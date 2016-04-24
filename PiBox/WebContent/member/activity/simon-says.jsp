@@ -119,34 +119,17 @@ function registerForSession() {
 		location.reload();
 	});
 }
-//Getting the commandId and direction
-function startGame() {
-	$.ajax({
-		url: "/PiBox/api/rest/sessions/"+sessionId,
-		type:"GET"
-	}).then(function(data) {
-		console.log(data.status);
-		if (data.status.stepId == cmdStatus){
-			console.log("do nothing!");
-		}
-		else if (data.status.commandId == cmdStatus+1){
-			console.log("startgame() - " + data.status.direction);
-			cmdStatus = data.status.stepId;
-			init(data.status.direction);
-		}
-		else {
-			//alert('Some problem occured with the connection. Please contact the host.');
-		}
-	});
-}
 
+var didStop = false;
 //Update gaming session
 function pollSession() {
 	$.ajax({
 		url: "/PiBox/api/rest/sessions/"+sessionId,
 		dataType:"json",
 		complete: function() {
-			setTimeout(pollSession, 2000);
+			if(didStop == false) {
+				setTimeout(pollSession, 2000);
+			}
 		}
 	}).then(function(data) {	
 		// Game is waiting to be started
@@ -164,6 +147,7 @@ function pollSession() {
 		
 		// Game is ending / ended
 		else if(data.status == "Stop") {
+			didStop = true;
 			if(boolSessionStarted == false) {
 				console.log('on stop - inactive');
 				$("#waiting").hide();
@@ -201,21 +185,19 @@ function pollSession() {
 				$("#waiting").hide();
 				$("#live").show();
 				var sessionStatus = JSON.parse(data.status);
-				
-				console.log('will compare: ' + sessionStatus.status.stepId + " == " + cmdStatus )
-				console.log(sessionStatus);
-				if (data.status.stepId == cmdStatus+1){
-					console.log("startgame() - " + sessionStatus.status.direction);
-					cmdStatus = sessionStatus.status.stepId;
-					init(sessionStatus.status.direction);
+				if (sessionStatus.stepId != cmdStatus){
+					console.log("startgame() - " + sessionStatus.direction);
+					cmdStatus = sessionStatus.stepId;
+					init(sessionStatus.direction);
+					setTimeout(function () {
+						if(getResult()  == true) {
+							updateScore(100);
+						} else {
+							updateScore(0);
+						}
+				    }, 5000);
+					
 				}
-				
-				//var outcome = startGame(); // initialize the game
-				//if(Boolean(outcome) == true)
-				//	updateScore(10);
-				//else
-				//	updateScore(0);
-
 			}
 		}
 	});
@@ -269,7 +251,5 @@ $(document).ready(function(){
 	}).then(function(data) {
 		pollSession();
 	});
-	
-	
 });
 </script>

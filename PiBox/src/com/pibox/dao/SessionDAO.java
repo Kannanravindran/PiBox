@@ -160,23 +160,42 @@ public class SessionDAO {
 	public SessionBean updateSession(SessionBean sessionToUpdate) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement pStatement;
-		String updateSessionSqlQuery = "UPDATE pibox.sessions SET name=?, activity=?, status=? "
-									+ "WHERE id=?";
 		SessionBean sessionToReturn = null;
-		try {
-			dbConnection = getConnection();
-			pStatement = (PreparedStatement) dbConnection.prepareStatement(updateSessionSqlQuery);
-			pStatement.setString(1, sessionToUpdate.getName());
-			pStatement.setString(2, sessionToUpdate.getActivity());
-			pStatement.setString(3, sessionToUpdate.getStatus());
-			pStatement.setInt(4, sessionToUpdate.getId());
-			pStatement.executeUpdate();
-			if(pStatement != null) {
-				pStatement.close();
-			}
-		} finally {
-			if(dbConnection != null) {
+		if(sessionToUpdate.getName() != null && !sessionToUpdate.getName().equals("")) {
+			String updateSessionSqlQuery = "UPDATE pibox.sessions SET name=?, activity=?, status=? "
+					+ "WHERE id=?";
+			try {
+				dbConnection = getConnection();
+				pStatement = (PreparedStatement) dbConnection.prepareStatement(updateSessionSqlQuery);
+				pStatement.setString(1, sessionToUpdate.getName());
+				pStatement.setString(2, sessionToUpdate.getActivity());
+				pStatement.setString(3, sessionToUpdate.getStatus());
+				pStatement.setInt(4, sessionToUpdate.getId());
+				pStatement.executeUpdate();
+				if(pStatement != null) {
+					pStatement.close();
+				}
+				} finally {
+				if(dbConnection != null) {
 				dbConnection.close();
+				}
+			}
+		} else {
+			String updateSessionSqlQuery = "UPDATE pibox.sessions SET status=? "
+					+ "WHERE id=?";
+			try {
+				dbConnection = getConnection();
+				pStatement = (PreparedStatement) dbConnection.prepareStatement(updateSessionSqlQuery);
+				pStatement.setString(1, sessionToUpdate.getStatus());
+				pStatement.setInt(2, sessionToUpdate.getId());
+				pStatement.executeUpdate();
+				if(pStatement != null) {
+					pStatement.close();
+				}
+				} finally {
+				if(dbConnection != null) {
+				dbConnection.close();
+				}
 			}
 		}
 		return sessionToReturn;

@@ -1,5 +1,19 @@
+var result = false;
+
+function getResult() {
+	if(result == true) {
+		alert('Well done!');
+		result = false;
+		return true;
+	} else {
+		alert('Ahw maybe next time');
+		
+	}
+	return result;
+}
+
 function init(commandId) {
-		alert('commandId' + commandId);
+				alert('Simon says... ' + commandId);
               //Find our div containers in the DOM
               var dataContainerOrientation = document.getElementById('dataContainerOrientation');
               var dataContainerMotion = document.getElementById('dataContainerMotion');
@@ -7,10 +21,10 @@ function init(commandId) {
               var alpha;
               var beta;
               var gamma;
-              var result = false;
+              
               // var sel= document.getElementById('commandlist');
               var sel = commandId;
-              option = sel.options[sel.selectedIndex].value;
+              option = sel; // sel.options[sel.selectedIndex].value;
                         if ( option == "left"){
                            positionInfo.innerHTML = '<h2 style="color:brown"><b><i>Keep your mobile vertical, then rotate left</i></b></h2>';
                         //   var htmlcontent = '<h2 style="color:brown"><b><i>Keep your mobile vertical, then rotate left</i></b></h2>';
